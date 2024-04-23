@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Crear Ciudadano</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">App ciudadanos </span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" th:href="@{/ciudadanos}">Listado de ciudadanos</a>
+        </div>
+    </div>
+</nav>
+<br>
+<br>
+<div class="container">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h1>Crear Ciudadano</h1>
+                <div class="card-body">
+                    <form th:action="@{/ciudadanos/{serial}(serial=${ciudadano.serial})}" method="post" th:object="${ciudadano}">
+                        <div class="form-group">
+                            <label class="control-label" for="nombre">Nombre: </label>
+                            <input id="nombre" type="text" class="form-control" th:field="*{nombre}"
+                                   pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+" title="Ingrese solo caracteres alfabéticos" required autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="numerodoc">Número de Documento:</label>
+                            <input id="numerodoc" type="text" class="form-control" th:field="*{numeroDoc} "
+                                   pattern="^[0-9]+$" title="Por favor, ingrese solo números positivos."
+                                   required autofocus="autofocus">
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label" for="fechanac">Fecha de Nacimiento:</label>
+                            <input id="fechanac" type="date" class="form-control" th:field="*{fechanac}"
+                                   onchange="validarFechaYCalcularEdad()" required autofocus="autofocus">
+                            <small id="errorFecha" style="color: red; display: none;">La fecha debe tener el formato YYYY-MM-DD</small>
+                        </div>
+
+                        <script>
+                            function validarFechaYCalcularEdad() {
+                                const fechaInput = document.getElementById('fechanac');
+                                const fecha = fechaInput.value;
+                                const formatoCorrecto = /^\d{4}-\d{2}-\d{2}$/.test(fecha);
+
+                                const errorFecha = document.getElementById('errorFecha');
+                                if (!formatoCorrecto) {
+                                    errorFecha.style.display = 'inline';
+                                    fechaInput.setCustomValidity('La fecha debe tener el formato YYYY-MM-DD');
+                                } else {
+                                    errorFecha.style.display = 'none';
+                                    fechaInput.setCustomValidity('');
+                                    calcularEdad();
+                                    establecerTipoDocumento();
+                                }
+                            }
+
+                            function calcularEdad() {
+                                var fechaNacimiento = new Date(document.getElementById("fechanac").value);
+                                var ahora = new Date();
+
+                                var edad = ahora.getFullYear() - fechaNacimiento.getFullYear();
+                                var mes = ahora.getMonth() - fechaNacimiento.getMonth();
+
+                                if (mes < 0 || (mes === 0 && ahora.getDate() < fechaNacimiento.getDate())) {
+                                    edad--;
+                                }
+
+                                document.getElementById("edad").value = edad;
+                            }
+
+                            function establecerTipoDocumento() {
+                                var edad = parseInt(document.getElementById("edad").value);
+                                var tipoDocSelect = document.getElementById("tipodoc");
+
+                                if (edad >= 18) {
+                                    tipoDocSelect.value = "cedula";
+                                } else if (edad >= 0 && edad <= 7) {
+                                    tipoDocSelect.value = "registro";
+                                } else {
+                                    tipoDocSelect.value = "identidad";
+                                }
+                            }
+                        </script>
+
+                        <div class="form-group">
+                            <label class="control-label" for="edad">Edad:</label>
+                            <input id="edad" type="number" class="form-control" th:field="*{edad}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="tipodoc">Tipo de Documento:</label>
+                            <input id="tipodoc" class="form-control" th:field="*{tipoDoc}" required autofocus="autofocus" readonly>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <label class="control-label" for="padre">Padre: </label>
+                            <input id="padre" type="text" class="form-control" th:field="*{papa}"
+                                   pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+" title="Ingrese solo caracteres alfabéticos" required autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="madre">Madre: </label>
+                            <input id="madre" type="text" class="form-control" th:field="*{mama}"
+                                   pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+" title="Ingrese solo caracteres alfabéticos" required autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="apellidoPadre">Apellido Padre (Si no tiene deje en blanco): </label>
+                            <input id="apellidoPadre" type="text" class="form-control" th:field="*{apellidoPadre}" th:value="${ciudadano.apellidoPadre} ? ${ciudadano.apellidoPadre} : 'no padre'"
+                                   pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]+" title="Ingrese solo caracteres alfabéticos" autofocus>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label" for="apellidoMadre">Apellido Madre (Si no tiene deje en blanco): </label>
+                            <input id="apellidoMadre" type="text" class="form-control" th:field="*{apellidoMadre}" th:value="${ciudadano.apellidoMadre} ? ${ciudadano.apellidoMadre} : ''"
+                                   pattern="[A-Za-zñÑáéíóúÁÉÍÓÚ\s]*" title="Ingrese solo caracteres alfabéticos" autofocus>
+                        </div>
+
+                        <br>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">Registrar </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br> <br>
+</div>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>
+

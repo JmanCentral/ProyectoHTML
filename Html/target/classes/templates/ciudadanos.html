@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Listado de ciudadanos</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed"
+                    data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">App ciudadanos </span> <span
+                    class="icon-bar"></span> <span class="icon-bar"></span> <span
+                    class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#" th:href="@{/ciudadanos}">Listado de ciudadanos</a>
+        </div>
+    </div>
+</nav>
+<br>
+<br>
+<div class="container">
+    <h1>Listado de ciudadanos</h1>
+    <br>
+    <a class="btn btn-primary" href="#" th:href="@{/ciudadanos/nuevo}">Adicionar Ciudadano</a>
+    <a class="btn btn-primary" href="/" role="button">Volver al inicio</a>
+    <br> <br>
+
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+        <tr>
+            <th>Serial</th>
+            <th>Nombre</th>
+            <th>NúmerodeDocumento</th>
+            <th>Fecha de Nacimiento</th>
+            <th>Tipo de Documento</th>
+            <th>Edad</th>
+            <th>Padre</th>
+            <th>Madre</th>
+            <th>Apellido Padre</th>
+            <th>Apellido Madre</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ciudadano : ${ciudadanos}">
+            <td th:text="${ciudadano.serial}">Serial</td>
+            <td th:text="${ciudadano.nombre}">Nombre</td>
+            <td th:text="${ciudadano.numeroDoc}">Número de Documento</td> <!-- Acceso a través de la relación 'persona' -->
+            <td th:text="${ciudadano.fechanac}">Fecha de Nacimiento</td> <!-- Acceso a través de la relación 'persona' -->
+            <td th:text="${ciudadano.tipoDoc}">Tipo de Documento</td> <!-- Acceso a través de la relación 'persona' -->
+            <td th:text="${ciudadano.edad}">Edad</td> <!-- Acceso a través de la relación 'persona' -->
+            <td th:text="${ciudadano.papa}">Padre</td>
+            <td th:text="${ciudadano.mama}">Madre</td>>
+            <td th:text="${ciudadano.apellidoPadre}">Apellido Padre</td> <!-- Acceso a través de la relación 'persona' -->
+            <td th:text="${ciudadano.apellidoMadre}">Apellido Madre</td> <!-- Acceso a través de la relación 'persona' -->
+             <!-- Acceso a través de la relación 'persona' -->
+            <td>
+                <a th:href="@{/ciudadanos/modificar/{serial}(serial=${ciudadano.serial})}" class="btn btn-info">Editar</a>
+                <a th:href="@{/ciudadanos/{serial}(serial=${ciudadano.serial})}" class="btn btn-danger">Eliminar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+</body>
+</html>
